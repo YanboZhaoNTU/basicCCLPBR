@@ -5,7 +5,7 @@ from sklearn.metrics import accuracy_score, f1_score
 from L2 import WeightedStackedEnsemble
 from u_mReadData import *
 
-class CCclass:
+class newCCclass:
     def __init__(self):
         self.classifiers = []
         self.CC_cfl_test = []
@@ -16,23 +16,13 @@ class CCclass:
         self.num = 0
 
 
-    def train(self, X, Y, begin, finish):
+    def train(self, X, Y, list):
         L = Y.shape[1]
         N = X.shape[0]
         D_j_prime_x = []
         D_j_prime_y = []
-
-        for j in range(L):
-            # D'j
-
-            # for (x, y) ∈ D
-
-                #do x' ← [x1,...,xd ,y1,...,yj−1]
-            if j == 0:
-                x_prime = np.array(X)
-            else:
-                x_prime = np.hstack((x_prime, Y[:,[j-1]]))
-                # Dj' ← Dj ∪ (x' ,yj )
+        x_prime = np.array(X)
+        for j in list:
             D_j_prime_x = x_prime
             D_j_prime_y = Y
 
@@ -42,6 +32,8 @@ class CCclass:
             # P(y=1∣X)= 1/ (1+a) a = e的-（wX+b）次方
             clf = LogisticRegression()
             clf.fit(D_j_prime_x, D_j_prime_y[:,j])
+
+            x_prime = np.hstack((x_prime, Y[:, [j]]))
             self.classifiers.append(clf)
             self.all_clf_train.append(clf)
             self.num = self.num + 1
@@ -85,12 +77,12 @@ class CCclass:
             cfl.fit(X, Y[:, i])
             self.all_clf_test.append(cfl)
 # 测试基学习器
-    def test_BRC_test(self, X, star, end):
+    def test_BRC_test(self, X,r):
 
         y_hat = []
         x_prime = np.array(X)
         j = 0
-        for i in range(star, end):
+        for i in range(r):
 
             D_j_prime_x = []
             # do x' ← [x1,...,xd , yˆ1,..., yˆj−1]
@@ -106,7 +98,9 @@ class CCclass:
             D_j_prime_x.append(x_prime)
             D_j_prime_x = np.array(D_j_prime_x)
             p = D_j_prime_x[0]
+            print(i)
             # do x' ← [x1,...,xd , yˆ1,..., yˆj−1]
+            q = self.all_clf_train[i]
             y_pred_j = self.all_clf_train[i].predict(p)
             y_hat = []
             # return y
@@ -129,6 +123,7 @@ class CCclass:
 
     def BRCLF_test_clear(self):
         self.CC_cfl_test = []
+
 
 
 

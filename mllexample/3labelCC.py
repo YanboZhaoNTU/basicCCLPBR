@@ -54,7 +54,7 @@ def split_into_batches(total, batch_size, shuffle=False):
 if __name__ == "__main__":
     total_number = 14  # 总数量
     draw_size = 3  # 每次抽取的数量
-    shuffle_numbers = True  # 是否打乱数字顺序
+    shuffle_numbers = False  # 是否打乱数字顺序
     data = data()
     batches = split_into_batches(total_number, draw_size, shuffle_numbers)
     data.train_Data()
